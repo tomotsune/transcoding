@@ -22,21 +22,22 @@ void binary_number::from_dec(const int &dec) {
 
 int binary_number::to_dec() const {
     int dec{}, temp{bin}, w{1};
-    while (bin) {
+    while (temp) {
         dec += temp % 10 * w;
         temp /= 10;
         w *= 2;
     }
+    return dec;
 }
 
 std::vector<byte> binary_number::to_original() const {
     std::vector<byte> v{};
-    int temp{bin>0?bin:-bin};
+    int temp{bin > 0 ? bin : -bin};
     while (temp) {
         v.push_back(temp % 10);
         temp /= 10;
     }
-    while(v.size()<8)v.push_back(0);
+    while (v.size() < 8)v.push_back(0);
     v[7] = bin > 0 ? 0 : 1;
     std::reverse(v.begin(), v.end());
     return v;
@@ -44,15 +45,17 @@ std::vector<byte> binary_number::to_original() const {
 
 void binary_number::from_original(const int &o) {
     int temp{o};
-    for (int i = 0; i < 7; ++i) {
-        bin += temp % 10 * std::pow(10, i);
-        temp /= 10;
-    }
-    bin = o / pow(10, 8) > 0 ? -bin : bin;
+//    for (int i = 0; i < 7; ++i) {
+//        bin += temp % 10 * std::pow(10, i);
+//        temp /= 10;
+//    }
+//    bin = o / pow(10, 8) > 0 ? -bin : bin;
+    bin =   temp%10000000;
+    bin = temp / 10000000==1 ? -bin : bin;
 }
 
 std::vector<byte> binary_number::to_one_compliment() const {
-    if (bin>0)return to_original();
+    if (bin > 0)return to_original();
     auto v{to_original()};
     for (auto iterator = v.begin() + 1; iterator != v.end(); ++iterator) {
         *iterator = !*iterator;
@@ -64,7 +67,7 @@ void binary_number::from_one_compliment(const int &one) {
     if (!(one / std::pow(10, 8)))from_original(one);
     std::vector<int> v;
     int temp{one}, w{1}, result{};
-    while (one) {
+    while (temp) {
         result += !(one % 10) * w;
         temp /= 10;
         w *= 10;
@@ -73,7 +76,7 @@ void binary_number::from_one_compliment(const int &one) {
 }
 
 std::vector<byte> binary_number::to_two_compliment() const {
-    if(bin>0)return to_original();
+    if (bin > 0)return to_original();
     auto v = to_one_compliment();
     if (v[7] == 0) v[7] = 1;
     else {
@@ -90,7 +93,7 @@ std::vector<byte> binary_number::to_two_compliment() const {
 }
 
 void binary_number::from_two_compliment(const int &two) {
-    from_one_compliment(two-1);
+    from_one_compliment(two - 1);
 }
 
 std::ostream &operator<<(std::ostream &os, const binary_number &number) {
