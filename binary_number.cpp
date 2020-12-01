@@ -50,8 +50,8 @@ void binary_number::from_original(const int &o) {
 //        temp /= 10;
 //    }
 //    bin = o / pow(10, 8) > 0 ? -bin : bin;
-    bin =   temp%10000000;
-    bin = temp / 10000000==1 ? -bin : bin;
+    bin = temp % 10000000;
+    bin = temp / 10000000 == 1 ? -bin : bin;
 }
 
 std::vector<byte> binary_number::to_one_compliment() const {
@@ -64,15 +64,18 @@ std::vector<byte> binary_number::to_one_compliment() const {
 }
 
 void binary_number::from_one_compliment(const int &one) {
-    if (!(one / std::pow(10, 8)))from_original(one);
-    std::vector<int> v;
+    if ((one / 10000000) == 0) {
+        from_original(one);
+        return;
+    }
     int temp{one}, w{1}, result{};
     while (temp) {
-        result += !(one % 10) * w;
+        result += w * (temp % 10 == 1 ? 0 : 1);
         temp /= 10;
         w *= 10;
     }
-    from_original(result);
+
+    from_original(result+10000000);
 }
 
 std::vector<byte> binary_number::to_two_compliment() const {
